@@ -12,3 +12,9 @@ spring:
     username: user
     password: password
     driverClassName: org.postgresql.Driver
+
+integration:
+  currency:
+    api:
+      url: "https://data.fixer.io"
+      key: "key"
