@@ -19,10 +19,10 @@ public class FixerIntegrationService {
   private final RestTemplate restTemplate;
 
   @Value("${integration.currency.api.url}")
-  private String apiUrl;
+  public String apiUrl;
 
   @Value("${integration.currency.api.key}")
-  private String apiKey;
+  public String apiKey;
 
   public Optional<SymbolsIntegration> getSymbols() {
     return get(apiUrl + "/api/symbols?access_key=" + apiKey, SymbolsIntegration.class);

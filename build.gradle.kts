@@ -33,6 +33,7 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 	testImplementation("org.assertj:assertj-core:3.26.3")
+	implementation("org.wiremock.integrations:wiremock-spring-boot:3.2.0")
 }
 
 tasks.withType<Test> {
