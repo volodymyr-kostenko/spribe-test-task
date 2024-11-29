@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: spribe-test-task
+  jpa:
+    database: "POSTGRESQL"
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+  datasource:
+    platform: postgres
+    url: jdbc:postgresql://localhost:5432/db
+    username: user
+    password: password
+    driverClassName: org.postgresql.Driver
