@@ -1,10 +1,10 @@
 package com.volodymyr.test.spribetesttask.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import com.volodymyr.test.spribetesttask.entity.SymbolEntity;
 import jakarta.transaction.Transactional;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +26,13 @@ class SymbolsRepositoryTest {
         .build();
     symbolsRepository.save(symbolEntity);
 
-    final SymbolEntity retrievedSymbolEntity = symbolsRepository.findBySymbol("USD");
+    final Optional<SymbolEntity> retrievedSymbolEntity = symbolsRepository.findById(
+        symbolEntity.getId());
 
-    assertThat(retrievedSymbolEntity).isNotNull();
+    assertThat(retrievedSymbolEntity).isNotEmpty().get().satisfies(entity -> {
+      assertThat(entity.getSymbol()).isEqualTo(symbolEntity.getSymbol());
+      assertThat(entity.getDescription()).isEqualTo(symbolEntity.getDescription());
+    });
   }
 
 }

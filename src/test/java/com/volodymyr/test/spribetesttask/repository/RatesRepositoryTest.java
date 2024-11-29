@@ -47,8 +47,11 @@ class RatesRepositoryTest {
 
     final Optional<RateEntity> retrievedRateEntity = ratesRepository.findById(rateEntity.getId());
 
-    assertThat(retrievedRateEntity).isNotEmpty();
-
+    assertThat(retrievedRateEntity).isNotEmpty().get().satisfies(entity -> {
+      assertThat(entity.getBase().getSymbol()).isEqualTo(rateEntity.getBase().getSymbol());
+      assertThat(entity.getTarget().getSymbol()).isEqualTo(rateEntity.getTarget().getSymbol());
+      assertThat(entity.getRate()).isEqualTo(rateEntity.getRate());
+    });
   }
 
 }
