@@ -1,5 +1,6 @@
 package com.volodymyr.test.spribetesttask.integration;
 
+import com.volodymyr.test.spribetesttask.integration.model.IntegrationResponse;
 import com.volodymyr.test.spribetesttask.integration.model.RatesIntegration;
 import com.volodymyr.test.spribetesttask.integration.model.SymbolsIntegration;
 import java.util.List;
@@ -35,14 +36,16 @@ public class FixerIntegrationService {
         RatesIntegration.class);
   }
 
-  private <T> Optional<T> get(String url, Class<T> responseType) {
+  private <T extends IntegrationResponse> Optional<T> get(String url, Class<T> responseType) {
     try {
       ResponseEntity<T> responseEntity = restTemplate.getForEntity(url, responseType);
-      if (responseEntity.getStatusCode().is2xxSuccessful()) {
+      if (responseEntity.getStatusCode().is2xxSuccessful()
+          && responseEntity.getBody() != null
+          && responseEntity.getBody().isSuccess()) {
         return Optional.ofNullable(responseEntity.getBody());
       } else {
-        log.error("Failed to get data from url: {}. Status code is: {}", url,
-            responseEntity.getStatusCode());
+        log.error("Failed to get data from url: {}. Status code is: {}. Response body is: {}", url,
+            responseEntity.getStatusCode(), responseEntity.getBody());
         return Optional.empty();
       }
     } catch (Exception e) {

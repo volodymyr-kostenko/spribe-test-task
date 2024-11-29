@@ -1,0 +1,12 @@
+GET http://data.fixer.io/api/latest?access_key=667dba7b4a71147468b7f85bf1041011&symbols=USD&base=INV
+
+
+
+
+{
+  "success": false,
+  "error": {
+    "code": 201,
+    "type": "invalid_base_currency"
+  }
+}

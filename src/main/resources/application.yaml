@@ -17,4 +17,4 @@ integration:
   currency:
     api:
       url: "https://data.fixer.io"
-      key: "key"
+      key: "667dba7b4a71147468b7f85bf1041011"

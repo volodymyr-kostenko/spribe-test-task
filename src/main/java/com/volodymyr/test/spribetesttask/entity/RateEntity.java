@@ -7,6 +7,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,5 +37,5 @@ public class RateEntity {
 
   private BigDecimal rate;
 
-  private LocalDateTime createdAt;
+  private Date createdAt;
 }
