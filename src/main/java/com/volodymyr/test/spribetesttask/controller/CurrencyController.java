@@ -1,8 +1,8 @@
-package com.volodymyr.test.spribe_test_task.currency.controller;
+package com.volodymyr.test.spribetesttask.controller;
 
-import com.volodymyr.test.spribe_test_task.currency.dto.Currency;
-import com.volodymyr.test.spribe_test_task.currency.dto.ExchangeRatesWrapper;
-import com.volodymyr.test.spribe_test_task.currency.dto.SupportedCurrenciesWrapper;
+import com.volodymyr.test.spribetesttask.dto.Currency;
+import com.volodymyr.test.spribetesttask.dto.ExchangeRatesWrapper;
+import com.volodymyr.test.spribetesttask.dto.SupportedCurrenciesWrapper;
 import java.util.Map;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

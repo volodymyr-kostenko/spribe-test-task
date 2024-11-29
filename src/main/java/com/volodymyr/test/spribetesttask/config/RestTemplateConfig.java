@@ -1,4 +1,4 @@
-package com.volodymyr.test.spribe_test_task.config;
+package com.volodymyr.test.spribetesttask.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

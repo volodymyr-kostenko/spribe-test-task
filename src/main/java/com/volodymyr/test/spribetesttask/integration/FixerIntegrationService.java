@@ -1,4 +1,4 @@
-package com.volodymyr.test.spribe_test_task.currency;
+package com.volodymyr.test.spribetesttask.integration;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

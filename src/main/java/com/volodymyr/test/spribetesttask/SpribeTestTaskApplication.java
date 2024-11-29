@@ -1,4 +1,4 @@
-package com.volodymyr.test.spribe_test_task;
+package com.volodymyr.test.spribetesttask;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

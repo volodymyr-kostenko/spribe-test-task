@@ -1,4 +1,4 @@
-package com.volodymyr.test.spribe_test_task.currency.controller;
+package com.volodymyr.test.spribetesttask.controller;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;

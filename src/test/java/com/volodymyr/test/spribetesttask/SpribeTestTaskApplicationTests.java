@@ -1,4 +1,4 @@
-package com.volodymyr.test.spribe_test_task;
+package com.volodymyr.test.spribetesttask;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

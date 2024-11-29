@@ -1,4 +1,4 @@
-package com.volodymyr.test.spribe_test_task.currency.dto;
+package com.volodymyr.test.spribetesttask.dto;
 
 import java.math.BigDecimal;
 import java.util.Map;
