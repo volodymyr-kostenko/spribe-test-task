@@ -28,10 +28,10 @@ public class FixerIntegrationService {
     return get(apiUrl + "/api/symbols?access_key=" + apiKey, SymbolsIntegration.class);
   }
 
-  public Optional<RatesIntegration> getExchangeRatesForCurrency(String base, List<String> symbols) {
+  public Optional<RatesIntegration> getRates(String base, List<String> symbols) {
     final String symbolsString = String.join(",", symbols);
     return get(
-        apiUrl + "/api/latest?access_key=" + apiKey + "&base=" + base + "symbols=" + symbolsString,
+        apiUrl + "/api/latest?access_key=" + apiKey + "&base=" + base + "&symbols=" + symbolsString,
         RatesIntegration.class);
   }
 
