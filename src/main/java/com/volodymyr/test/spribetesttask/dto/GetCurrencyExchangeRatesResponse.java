@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ExchangeRatesWrapper {
+public class GetCurrencyExchangeRatesResponse {
 
   private final String base;
   private final String description;

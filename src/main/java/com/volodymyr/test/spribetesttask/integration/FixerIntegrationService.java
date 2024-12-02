@@ -2,7 +2,6 @@ package com.volodymyr.test.spribetesttask.integration;
 
 import com.volodymyr.test.spribetesttask.integration.model.IntegrationResponse;
 import com.volodymyr.test.spribetesttask.integration.model.RatesIntegration;
-import com.volodymyr.test.spribetesttask.integration.model.SymbolsIntegration;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,10 +22,6 @@ public class FixerIntegrationService {
 
   @Value("${integration.currency.api.key}")
   public String apiKey;
-
-  public Optional<SymbolsIntegration> getSymbols() {
-    return get(apiUrl + "/api/symbols?access_key=" + apiKey, SymbolsIntegration.class);
-  }
 
   public Optional<RatesIntegration> getRates(String base) {
     return get(

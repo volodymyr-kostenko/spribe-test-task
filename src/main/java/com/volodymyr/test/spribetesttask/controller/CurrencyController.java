@@ -1,8 +1,8 @@
 package com.volodymyr.test.spribetesttask.controller;
 
-import com.volodymyr.test.spribetesttask.dto.Currency;
-import com.volodymyr.test.spribetesttask.dto.ExchangeRatesWrapper;
-import com.volodymyr.test.spribetesttask.dto.SupportedCurrenciesWrapper;
+import com.volodymyr.test.spribetesttask.dto.CreateCurrencyRequest;
+import com.volodymyr.test.spribetesttask.dto.GetCurrencyExchangeRatesResponse;
+import com.volodymyr.test.spribetesttask.dto.GetSupportedCurrenciesResponse;
 import com.volodymyr.test.spribetesttask.service.CurrencyData;
 import com.volodymyr.test.spribetesttask.service.CurrencyService;
 import java.util.Optional;
@@ -21,17 +21,17 @@ public class CurrencyController {
   private final CurrencyService currencyService;
 
   @GetMapping(value = "/currencies", produces = "application/json")
-  public ResponseEntity<SupportedCurrenciesWrapper> getAllCurrencies() {
-    return ResponseEntity.ok(new SupportedCurrenciesWrapper(currencyService.getAllCurrencies()));
+  public ResponseEntity<GetSupportedCurrenciesResponse> getAllCurrencies() {
+    return ResponseEntity.ok(new GetSupportedCurrenciesResponse(currencyService.getAllCurrencies()));
   }
 
   @GetMapping("/currencies/{currency}/rates")
-  public ResponseEntity<ExchangeRatesWrapper> getExchangeRateForCurrency(
+  public ResponseEntity<GetCurrencyExchangeRatesResponse> getExchangeRateForCurrency(
       @PathVariable String currency) {
     final Optional<CurrencyData> currencyData = currencyService.getExchangeRates(currency);
 
     return currencyData.map(data -> ResponseEntity.ok(
-                new ExchangeRatesWrapper(
+                new GetCurrencyExchangeRatesResponse(
                     currency,
                     data.getDescription(),
                     data.getDate().getTime(),
@@ -44,7 +44,7 @@ public class CurrencyController {
   }
 
   @PostMapping("/currencies")
-  public ResponseEntity<Object> addNewCurrency(@RequestBody Currency newCurrency) {
+  public ResponseEntity<Object> addNewCurrency(@RequestBody CreateCurrencyRequest newCurrency) {
     currencyService.addCurrency(newCurrency.getCurrency(), newCurrency.getDescription());
 
     return ResponseEntity.ok().build();

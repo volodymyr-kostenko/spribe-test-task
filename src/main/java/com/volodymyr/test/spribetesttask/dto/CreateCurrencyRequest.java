@@ -1,6 +1,5 @@
 package com.volodymyr.test.spribetesttask.dto;
 
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SupportedCurrenciesWrapper {
+public class CreateCurrencyRequest {
 
-  private final Map<String, String> symbols;
+  private final String currency;
+  private final String description;
 }
