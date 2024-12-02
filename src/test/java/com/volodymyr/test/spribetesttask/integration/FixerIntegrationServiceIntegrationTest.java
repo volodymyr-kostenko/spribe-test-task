@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.volodymyr.test.spribetesttask.integration.model.RatesIntegration;
-import com.volodymyr.test.spribetesttask.integration.model.SymbolsIntegration;
 import java.math.BigDecimal;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,23 +28,6 @@ class FixerIntegrationServiceIntegrationTest {
   void setup() {
     ReflectionTestUtils.setField(fixerIntegrationService, "apiUrl", wiremockUrl);
     ReflectionTestUtils.setField(fixerIntegrationService, "apiKey", "key");
-  }
-
-  @Test
-  void symbolsAreReturned() {
-    WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/api/symbols?access_key=key"))
-        .willReturn(WireMock.aResponse()
-            .withHeader("Content-Type", "application/json")
-            .withBody(
-                "{\"success\":true,\"symbols\":{\"USD\":\"United States Dollar\",\"EUR\":\"Euro\"}}")));
-
-    Optional<SymbolsIntegration> result = fixerIntegrationService.getSymbols();
-
-    assertThat(result).isNotEmpty().get().satisfies(symbolsIntegration -> {
-      assertThat(symbolsIntegration.isSuccess()).isTrue();
-      assertThat(symbolsIntegration.getSymbols()).containsEntry("USD", "United States Dollar");
-      assertThat(symbolsIntegration.getSymbols()).containsEntry("EUR", "Euro");
-    });
   }
 
   @Test

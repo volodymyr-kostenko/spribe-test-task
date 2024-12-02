@@ -36,6 +36,8 @@ dependencies {
 	testImplementation("org.assertj:assertj-core:3.26.3")
 	implementation("org.wiremock.integrations:wiremock-spring-boot:3.2.0")
 	implementation("io.hypersistence:hypersistence-utils-hibernate-63:3.9.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.7.0")
+	implementation("org.springframework.boot:spring-boot-starter-validation:3.4.0")
 }
 
 tasks.withType<Test> {

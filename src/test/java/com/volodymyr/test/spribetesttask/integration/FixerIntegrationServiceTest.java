@@ -5,16 +5,6 @@ import org.junit.jupiter.api.Test;
 public class FixerIntegrationServiceTest {
 
   @Test
-  void errorCodeIsHandledWhileGettingSymbols() {
-
-  }
-
-  @Test
-  void exceptionIsHandledWhileGettingSymbols() {
-
-  }
-
-  @Test
   void errorCodeIsHandledWhileGettingExchangeRates() {
 
   }

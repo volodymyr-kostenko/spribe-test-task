@@ -1,7 +1,9 @@
 package com.volodymyr.test.spribetesttask.service;
 
+import com.volodymyr.test.spribetesttask.controller.exception.NotPossibleToFetchExchangeRatesException;
 import com.volodymyr.test.spribetesttask.entity.CurrencyEntity;
 import com.volodymyr.test.spribetesttask.integration.FixerIntegrationService;
+import com.volodymyr.test.spribetesttask.integration.model.RatesIntegration;
 import com.volodymyr.test.spribetesttask.repository.CurrenciesRepository;
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
@@ -43,8 +45,11 @@ public class CurrencyService {
       return;
     }
 
-    fixerIntegrationService.getRates(symbol).ifPresent(ratesIntegration -> {
-      final Map<String, BigDecimal> rates = ratesIntegration.getRates();
+    final Optional<RatesIntegration> ratesIntegration = fixerIntegrationService.getRates(
+        symbol);
+
+    if (ratesIntegration.isPresent()) {
+      final Map<String, BigDecimal> rates = ratesIntegration.get().getRates();
 
       final CurrencyEntity currencyEntity = CurrencyEntity.builder()
           .id(UUID.randomUUID())
@@ -56,8 +61,12 @@ public class CurrencyService {
       currenciesRepository.save(currencyEntity);
 
       ratesCache.put(symbol,
-          new CurrencyData(description, ratesIntegration.getDate(), rates));
-    });
+          new CurrencyData(description, ratesIntegration.get().getDate(), rates));
+    } else {
+      log.error("Failed to fetch exchange rates for currency {}", symbol);
+      throw new NotPossibleToFetchExchangeRatesException(
+          "Failed to fetch exchange rates for currency " + symbol);
+    }
   }
 
   @Transactional
