@@ -34,6 +34,7 @@ class CurrencyControllerIntegrationTest {
   void supportedCurrenciesAreReturned() throws Exception {
     when(currencyService.getAllCurrencies()).thenReturn(Map.of("USD", "United States Dollar"));
 
+    //TODO change to xpath fields navigation
     mockMvc.perform(MockMvcRequestBuilders.get("/currencies"))
         .andExpect(status().isOk())
         .andExpect(content().json("{\"symbols\": {\"USD\": \"United States Dollar\"}}"));

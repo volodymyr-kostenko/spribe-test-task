@@ -7,10 +7,12 @@ import com.volodymyr.test.spribetesttask.integration.model.RatesIntegration;
 import com.volodymyr.test.spribetesttask.integration.model.SymbolsIntegration;
 import java.math.BigDecimal;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.wiremock.spring.EnableWireMock;
 
 @SpringBootTest
@@ -23,12 +25,14 @@ class FixerIntegrationServiceIntegrationTest {
   @Value("${wiremock.server.baseUrl}")
   private String wiremockUrl;
 
+  @BeforeEach
+  void setup() {
+    ReflectionTestUtils.setField(fixerIntegrationService, "apiUrl", wiremockUrl);
+    ReflectionTestUtils.setField(fixerIntegrationService, "apiKey", "key");
+  }
+
   @Test
   void symbolsAreReturned() {
-    //TODO add proper injection of wiremockUrl
-    fixerIntegrationService.apiUrl = wiremockUrl;
-    fixerIntegrationService.apiKey = "key";
-
     WireMock.stubFor(WireMock.get(WireMock.urlEqualTo("/api/symbols?access_key=key"))
         .willReturn(WireMock.aResponse()
             .withHeader("Content-Type", "application/json")
@@ -46,10 +50,6 @@ class FixerIntegrationServiceIntegrationTest {
 
   @Test
   void ratesAreReturned() {
-    //TODO add proper injection of wiremockUrl
-    fixerIntegrationService.apiUrl = wiremockUrl;
-    fixerIntegrationService.apiKey = "key";
-
     WireMock.stubFor(
         WireMock.get(WireMock.urlEqualTo("/api/latest?access_key=key&base=USD"))
             .willReturn(WireMock.aResponse()
@@ -62,10 +62,6 @@ class FixerIntegrationServiceIntegrationTest {
     assertThat(result).isNotEmpty().get().satisfies(ratesIntegration -> {
       assertThat(ratesIntegration.isSuccess()).isTrue();
       assertThat(ratesIntegration.getTimestamp()).isEqualTo(1620000000);
-//      final Instant instant = Instant.ofEpochSecond(ratesIntegration.getDate().getTime());
-//      assertThat(instant.get(ChronoField.DAY_OF_MONTH)).isEqualTo(2);
-//      assertThat(instant.get(ChronoField.MONTH_OF_YEAR)).isEqualTo(5);
-//      assertThat(instant.get(ChronoField.YEAR)).isEqualTo(2021);
       assertThat(ratesIntegration.getBase()).isEqualTo("USD");
       assertThat(ratesIntegration.getRates()).containsEntry("UAH", new BigDecimal("27.5"));
       assertThat(ratesIntegration.getRates()).containsEntry("EUR", new BigDecimal("0.8"));

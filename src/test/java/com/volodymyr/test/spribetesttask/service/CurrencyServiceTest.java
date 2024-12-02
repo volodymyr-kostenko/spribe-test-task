@@ -147,7 +147,7 @@ class CurrencyServiceTest {
   }
 
   @Test
-  void test() {
-    //TODO add test
+  void databaseContentIsLoadedIntoCache() {
+    //TODO add liquidbase init script with a currency and then check cache is not empty
   }
 }
