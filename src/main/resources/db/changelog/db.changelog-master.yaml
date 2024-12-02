@@ -4,12 +4,11 @@ databaseChangeLog:
       author: dev
       changes:
         - createTable:
-            tableName: symbols
+            tableName: currencies
             columns:
               - column:
                   name: id
                   type: UUID
-#                  autoIncrement: true
                   constraints:
                     primaryKey: true
               - column:
@@ -21,29 +20,9 @@ databaseChangeLog:
               - column:
                   name: description
                   type: TEXT
-
-        - createTable:
-            tableName: rates
-            columns:
               - column:
-                  name: id
-                  type: UUID
-#                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
+                  name: rates
+                  type: json
               - column:
-                  name: base_id
-                  type: UUID
-                  constraints:
-                    nullable: false
-              - column:
-                  name: target_id
-                  type: UUID
-                  constraints:
-                    nullable: false
-              - column:
-                  name: rate
-                  type: NUMERIC
-              - column:
-                  name: created_at
+                  name: updated_at
                   type: TIMESTAMP

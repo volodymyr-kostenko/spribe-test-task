@@ -1,34 +1,32 @@
 package com.volodymyr.test.spribetesttask.service;
 
-import com.volodymyr.test.spribetesttask.entity.RateEntity;
-import com.volodymyr.test.spribetesttask.entity.SymbolEntity;
+import com.volodymyr.test.spribetesttask.entity.CurrencyEntity;
 import com.volodymyr.test.spribetesttask.integration.FixerIntegrationService;
-import com.volodymyr.test.spribetesttask.integration.model.RatesIntegration;
-import com.volodymyr.test.spribetesttask.repository.RatesRepository;
-import com.volodymyr.test.spribetesttask.repository.SymbolsRepository;
-import jakarta.transaction.Transactional;
-import java.util.List;
+import com.volodymyr.test.spribetesttask.repository.CurrenciesRepository;
+import jakarta.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class CurrencyService {
 
-  private final SymbolsRepository symbolsRepository;
-  private final RatesRepository exchangeRateRepository;
+  private final CurrenciesRepository currenciesRepository;
   private final FixerIntegrationService fixerIntegrationService;
 
+  @Getter
   private final ConcurrentHashMap<String, CurrencyData> ratesCache = new ConcurrentHashMap<>();
-  private final RatesRepository ratesRepository;
 
   public Map<String, String> getAllCurrencies() {
     return ratesCache.entrySet().stream()
@@ -41,54 +39,56 @@ public class CurrencyService {
 
   @Transactional
   public void addCurrency(String symbol, String description) {
-    //TODO save a new currency to the DB
-    final Optional<SymbolEntity> existingSymbolEntity = symbolsRepository.findBySymbol(symbol);
+    final Optional<CurrencyEntity> existingSymbolEntity = currenciesRepository.findBySymbol(symbol);
     if (existingSymbolEntity.isPresent()) {
       log.info("Currency with symbol {} already exists", symbol);
       return;
     }
 
-    //try synchonization by a map
+    fixerIntegrationService.getRates(symbol).ifPresent(ratesIntegration -> {
+      final Map<String, BigDecimal> rates = ratesIntegration.getRates();
 
-    final List<SymbolEntity> allSymbolEntities = symbolsRepository.findAll();
+      final CurrencyEntity currencyEntity = CurrencyEntity.builder()
+          .id(UUID.randomUUID())
+          .symbol(symbol)
+          .description(description)
+          .rates(rates)
+          .build();
 
-    final Optional<RatesIntegration> ratesIntegrationOptional = fixerIntegrationService.getRates(
-        symbol,
-        allSymbolEntities.stream().map(SymbolEntity::getSymbol).toList());
+      currenciesRepository.save(currencyEntity);
 
-    ratesIntegrationOptional.ifPresent(ratesIntegration -> {
-      final SymbolEntity newSymbolEntity = symbolsRepository.save(
-          new SymbolEntity(UUID.randomUUID(), symbol, description));
-
-      if (!allSymbolEntities.isEmpty()) {
-        final List<RateEntity> rateEntities = ratesIntegration.getRates().entrySet().stream()
-            .map(symbolToRate -> {
-                  final SymbolEntity targetSymbolEntity = allSymbolEntities.stream()
-                      .filter(symbolEntity -> symbolEntity.getSymbol().equals(symbolToRate.getKey()))
-                      .findFirst().get();
-
-                  return new RateEntity(UUID.randomUUID(), newSymbolEntity, targetSymbolEntity,
-                      symbolToRate.getValue(), ratesIntegration.getDate());
-                }
-
-            ).toList();
-
-        ratesRepository.saveAll(rateEntities);
-      }
-
-      //update caches
       ratesCache.put(symbol,
-          new CurrencyData(description, ratesIntegration.getDate(), ratesIntegration.getRates()));
+          new CurrencyData(description, ratesIntegration.getDate(), rates));
     });
   }
 
-  @Scheduled(fixedRate = 3600000) // 1 hour
+  @Transactional
+  @Scheduled(cron = "0 0 * * * *") // every hour
   public void fetchAndStoreExchangeRates() {
-    loadRates();
+    log.info("Fetching and storing exchange rates");
+
+    currenciesRepository.findAll().forEach(currencyEntity -> {
+      fixerIntegrationService.getRates(currencyEntity.getSymbol()).ifPresent(ratesIntegration -> {
+        currencyEntity.setRates(ratesIntegration.getRates());
+        currencyEntity.setUpdatedAt(ratesIntegration.getDate());
+        currenciesRepository.save(currencyEntity);
+
+        ratesCache.put(currencyEntity.getSymbol(),
+            new CurrencyData(currencyEntity.getDescription(), ratesIntegration.getDate(),
+                ratesIntegration.getRates()));
+      });
+    });
   }
 
+  @PostConstruct
   public void loadRates() {
-    // warm up cache
+    log.info("Loading rates from database");
 
+    currenciesRepository.findAll().forEach(currencyEntity -> {
+      final CurrencyData currencyData = new CurrencyData(currencyEntity.getDescription(),
+          currencyEntity.getUpdatedAt(),
+          currencyEntity.getRates());
+      ratesCache.put(currencyEntity.getSymbol(), currencyData);
+    });
   }
 }

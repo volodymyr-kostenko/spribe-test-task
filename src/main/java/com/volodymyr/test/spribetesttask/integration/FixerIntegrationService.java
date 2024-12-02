@@ -3,7 +3,6 @@ package com.volodymyr.test.spribetesttask.integration;
 import com.volodymyr.test.spribetesttask.integration.model.IntegrationResponse;
 import com.volodymyr.test.spribetesttask.integration.model.RatesIntegration;
 import com.volodymyr.test.spribetesttask.integration.model.SymbolsIntegration;
-import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +28,9 @@ public class FixerIntegrationService {
     return get(apiUrl + "/api/symbols?access_key=" + apiKey, SymbolsIntegration.class);
   }
 
-  public Optional<RatesIntegration> getRates(String base, List<String> symbols) {
-    final String symbolsString = String.join(",", symbols);
+  public Optional<RatesIntegration> getRates(String base) {
     return get(
-        apiUrl + "/api/latest?access_key=" + apiKey + "&base=" + base + "&symbols=" + symbolsString,
+        apiUrl + "/api/latest?access_key=" + apiKey + "&base=" + base,
         RatesIntegration.class);
   }
 
