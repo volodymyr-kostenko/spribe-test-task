@@ -5,6 +5,7 @@ import com.volodymyr.test.spribetesttask.dto.ExchangeRatesWrapper;
 import com.volodymyr.test.spribetesttask.dto.SupportedCurrenciesWrapper;
 import com.volodymyr.test.spribetesttask.service.CurrencyData;
 import com.volodymyr.test.spribetesttask.service.CurrencyService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,10 +28,19 @@ public class CurrencyController {
   @GetMapping("/currencies/{currency}/rates")
   public ResponseEntity<ExchangeRatesWrapper> getExchangeRateForCurrency(
       @PathVariable String currency) {
-    final CurrencyData currencyData = currencyService.getExchangeRates(currency);
-    return ResponseEntity.ok(
-        new ExchangeRatesWrapper(currencyData.getDescription(), currencyData.getDate().getTime(),
-            currencyData.getRates()));
+    final Optional<CurrencyData> currencyData = currencyService.getExchangeRates(currency);
+
+    return currencyData.map(data -> ResponseEntity.ok(
+                new ExchangeRatesWrapper(
+                    currency,
+                    data.getDescription(),
+                    data.getDate().getTime(),
+                    data.getRates()
+                )
+            )
+        )
+        .orElseGet(() -> ResponseEntity.notFound().build());
+
   }
 
   @PostMapping("/currencies")

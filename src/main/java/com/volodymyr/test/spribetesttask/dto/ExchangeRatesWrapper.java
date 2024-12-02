@@ -12,6 +12,7 @@ import lombok.Setter;
 public class ExchangeRatesWrapper {
 
   private final String base;
+  private final String description;
   private final long timestamp;
   private final Map<String, BigDecimal> rates;
 }

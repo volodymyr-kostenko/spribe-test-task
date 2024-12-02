@@ -10,7 +10,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,7 +24,6 @@ public class CurrencyService {
   private final CurrenciesRepository currenciesRepository;
   private final FixerIntegrationService fixerIntegrationService;
 
-  @Getter
   private final ConcurrentHashMap<String, CurrencyData> ratesCache = new ConcurrentHashMap<>();
 
   public Map<String, String> getAllCurrencies() {
@@ -33,8 +31,8 @@ public class CurrencyService {
         .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getDescription()));
   }
 
-  public CurrencyData getExchangeRates(String currencyCode) {
-    return ratesCache.get(currencyCode);
+  public Optional<CurrencyData> getExchangeRates(String currencyCode) {
+    return Optional.ofNullable(ratesCache.get(currencyCode));
   }
 
   @Transactional
